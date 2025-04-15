@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dark Gold Showcase</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(to right, #1a1400, #2b2100);
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff6d6;
+      overflow-x: hidden;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 30px 0 10px;
+      font-size: 2.2em;
+      background: linear-gradient(to right, #ffcc00, #fff4b2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .gallery-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .gallery-wrapper {
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 10px;
+      max-width: 100%;
+    }
+
+    .item {
+      flex: 0 0 80%;
+      scroll-snap-align: center;
+      opacity: 0.3;
+      filter: blur(3px);
+      transform: scale(0.92);
+      transition: all 0.5s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .item img {
+      width: 100%;
+      border-radius: 20px;
+      opacity: 0.7;
+      transition: all 0.5s ease;
+    }
+
+    .item.active {
+      opacity: 1;
+      filter: blur(0);
+      transform: scale(1.05);
+      z-index: 2;
+    }
+
+    .item.active img {
+      opacity: 1;
+      animation: float 4s ease-in-out infinite, glowPulse 4s ease-in-out infinite;
+    }
+
+    .text-box {
+      max-width: 90%;
+      margin-top: 20px;
+      padding: 10px;
+      transition: opacity 0.4s ease;
+    }
+
+    .text-box h2 {
+      color: #ffcc00;
+      margin-bottom: 10px;
+    }
+
+    .text-box p {
+      color: #f0e6c2;
+      line-height: 1.6;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    @keyframes glowPulse {
+      0% {
+        filter: drop-shadow(0 0 4px #ffd700) drop-shadow(0 0 8px #ffcc00);
+      }
+      50% {
+        filter: drop-shadow(0 0 10px #fff8dc) drop-shadow(0 0 14px #fff3b0);
+      }
+      100% {
+        filter: drop-shadow(0 0 4px #ffd700) drop-shadow(0 0 8px #ffcc00);
+      }
+    }
+
+    @media (min-width: 769px) {
+      .gallery-wrapper {
+        justify-content: center;
+        overflow-x: visible;
+      }
+
+      .item {
+        flex: 0 0 240px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Produk Premium Kami</h1>
+
+  <div class="gallery-container">
+    <div class="gallery-wrapper" id="gallery">
+      <div class="item active" onclick="selectItem(0)">
+        <img src="92.jpg.png" alt="V1">
+      </div>
+      <div class="item" onclick="selectItem(1)">
+        <img src="danger.jpg.png" alt="V2">
+      </div>
+      <div class="item" onclick="selectItem(2)">
+        <img src="lebah.jpg.png" alt="V3">
+      </div>
+    </div>
+
+    <div class="text-box" id="description">
+      <h2>Aerphone V1</h2>
+      <p>
+        Aerphone V1 menghadirkan kualitas suara jernih dengan desain elegan dan fitur anti air. Ideal untuk digunakan kapan saja dan di mana saja.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const items = document.querySelectorAll('.item');
+    const descBox = document.getElementById('description');
+
+    const data = [
+      {
+        title: "Aerphone V1",
+        desc: "Aerphone V1 menghadirkan kualitas suara jernih dengan desain elegan dan fitur anti air. Ideal untuk digunakan kapan saja dan di mana saja."
+      },
+      {
+        title: "Aerphone V2",
+        desc: "Aerphone V2 menampilkan desain ungu mewah dengan noise cancellation dan bass kuat. Cocok untuk musik dan meeting profesional."
+      },
+      {
+        title: "Aerphone V3",
+        desc: "Versi sport-ready: ringan, tahan keringat, dan daya baterai 12 jam. Aerphone V3 adalah teman setia gaya hidup aktif."
+      }
+    ];
+
+    let currentIndex = 0;
+
+    function selectItem(index) {
+      if (index === currentIndex) return;
+      items.forEach((item, i) => {
+        item.classList.remove('active');
+        if (i === index) item.classList.add('active');
+      });
+
+      descBox.style.opacity = '0';
+
+      setTimeout(() => {
+        descBox.innerHTML = `
+          <h2>${data[index].title}</h2>
+          <p>${data[index].desc}</p>
+        `;
+        descBox.style.opacity = '1';
+      }, 300);
+
+      currentIndex = index;
+    }
+
+    // Swipe support (horizontal only)
+    let startX = 0;
+    const gallery = document.getElementById('gallery');
+
+    gallery.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+    });
+
+    gallery.addEventListener('touchend', (e) => {
+      let endX = e.changedTouches[0].clientX;
+      let diff = startX - endX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0 && currentIndex < items.length - 1) {
+          selectItem(currentIndex + 1);
+        } else if (diff < 0 && currentIndex > 0) {
+          selectItem(currentIndex - 1);
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
